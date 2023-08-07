@@ -31,6 +31,8 @@ long separaComandoP2Long(string c);
 void ayuda();
 bool iniciarJuego();
 void infoJugadores();
+void guardar(bool,string,fstream&);
+void guardar_comprimido(bool,string,fstream&);
 Jugador* encontrarJugador(long id_jugador);
 void comandoTurno(long id_jugador);
 void actualizarTurno(Jugador* jugadorActual);
@@ -260,4 +262,45 @@ void comandoConquistaBarata(){
     else{
         Continente::evaluarCostoConquistaBarata();
     }
+}
+
+void guardar(bool inicializado, string nameArchivo, fstream& txt){
+  if(b){
+    string nombreArchivo = getNombreArchivo(nameArchivo) + ".txt";
+    txt.open(nombreArchivo, ios::out);
+    if(!txt)
+    {
+      cout<<endl<<"La partida no ha sido guardada correctamente."<<endl;
+    }
+    else
+    {
+      cout<<endl<<"La partida ha sido guardada correctamente en '" << nombreArchivo << "'"<<endl;
+    }
+    txt.close();
+  }
+  else{
+    cout<<endl<<"Esta partida no ha sido inicializada correctamente."<<endl;
+  }
+}
+void guardar_comprimido(bool inicializado, string nameArchivo, fstream& bin){
+  if(b){
+    string nombreArchivo = getNombreArchivo(nameArchivo) + ".dat";
+    bin.open(nombreArchivo,ios::binary |ios::out);
+    if(!bin)
+    {
+      cout<<endl<<"La partida no ha sido codificada ni guardada correctamente."<<endl;
+    }
+    else{
+      cout<<endl<<"La partida ha sido codificada y guardada correctamente en '" << nombreArchivo << "'"<<endl;
+      bin.close();      
+    }    
+  }
+  else{
+    cout<<endl<<"Esta partida no ha sido inicializada correctamente."<<endl;
+  }  
+}
+string getNombreArchivo(string nombreArc){
+  size_t pos = nombreArc.find(" ");
+  string aux = nombreArc.substr(pos + 1);
+  return aux;
 }
