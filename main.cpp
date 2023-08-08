@@ -34,6 +34,8 @@ void infoJugadores();
 Jugador* encontrarJugador(long id_jugador);
 void comandoTurno(long id_jugador);
 void actualizarTurno(Jugador* jugadorActual);
+void guardar(bool,string,fstream&);
+void guardar_comprimido(bool,string,fstream&);
 
 void comandoConquistaBarata();
 
@@ -76,10 +78,23 @@ int main() {
           if(juegoIniciado == false){
             cout << "Esta partida no ha sido inicializada correctamente."<<endl;
           }
+            else {
+                bool aux = inicializarJuego();
+                string nombre;
+                cout<<"ingrese el nombre en donde se guardara la informacion de juego " << endl;
+                cin>>nombre;
+                guardar(aux,nombre,txt);
+            }
+        
         }
         else if (comando == "guardar_comprimido") { // <nombre_archivo>
           // Código para guardar partida en <nombre_archivo> bin
           auxS = separaComandoP2String(comandoAux);
+            bool aux = inicializarJuego();
+            string nombre;
+                cout<<"ingrese el nombre en donde se guardara la informacion de juego " << endl;
+                cin>>nombre;
+            guardar_comprimido(aux,nombre,bin);
 
         }
         else if (comando == "inicializar" && (posEspacio+ 1) != 0) { // <nombre_archivo>
@@ -260,4 +275,47 @@ void comandoConquistaBarata(){
     else{
         Continente::evaluarCostoConquistaBarata();
     }
+}
+// Funcion que guarda la partida ya iniciada 
+void guardar(bool iniciada, string nameArchivo, fstream& txt){
+  if(iniciada){
+    string nombreArchivo = getNombreArchivo(nameArchivo) + ".txt";
+    txt.open(nombreArchivo, ios::out);
+    if(!txt)
+    {
+      cout<<endl<<"La partida no ha sido guardada correctamente."<<endl;
+    }
+    else
+    {
+      cout<<endl<<"La partida ha sido guardada correctamente en '" << nombreArchivo << "'"<<endl;
+    }
+    txt.close();
+  }
+  else{
+    cout<<endl<<"Esta partida no ha sido inicializada correctamente."<<endl;
+  }
+}
+
+void guardar_comprimido(bool iniciada, string nameArch, fstream& bin){
+  if(iniciada){
+    string nombreArchivo = getNombreArchivo(nameArch) + ".dat";
+    bin.open(nombreArchivo,ios::binary |ios::out);
+    if(!bin)
+    {
+      cout<<endl<<"La partida no ha sido codificada ni guardada correctamente."<<endl;
+    }
+    else{
+      cout<<endl<<"La partida ha sido codificada y guardada correctamente en '" << nombreArchivo << "'"<<endl;
+      bin.close();      
+    }    
+  }
+  else{
+    cout<<endl<<"Esta partida no ha sido inicializada correctamente."<<endl;
+  }  
+}
+
+string getNombreArchivo(string nombre){
+  size_t pos = nombre.find(" ");
+  string aux = nombre.substr(pos + 1);
+  return aux;
 }
